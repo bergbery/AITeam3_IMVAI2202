@@ -1,0 +1,99 @@
+.hidectrl {
+	display: none;
+}
+
+#wikidescription p {
+	font: 400 14px Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
+}
+
+header.masthead {
+	
+    display: table;
+    width: 100%;
+}
+
+@media (max-width: 767px) {
+	.colcenter {
+		margin-top: 0%;
+	}
+}
+@media (min-width: 768px) {
+	.colcenter {
+		margin-top: 20%;
+		margin-left: 60%;
+	}
+}
+
+table.ingredienttbl {
+	background: white;
+}
+table.ingredienttbl thead {
+	background-color: #3f87a6;
+    color: #fff;
+}
+table.ingredienttbl thead td {
+	font: 700 24px Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
+}
+table.ingredienttbl tbody td {
+	text-align: left;
+	font: 400 16px Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
+}
+table.ingredienttbl tbody td.centernumber {
+	text-align:center;
+}
+
+
+table.receipetbl {
+	background: white;
+}
+table.receipetbl thead {
+	background-color: #3f87a6;
+    color: #fff;
+}
+table.receipetbl thead td {
+	font: 700 24px Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
+}
+table.receipetbl tbody td {
+	text-align: left;
+	font: 400 16px Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
+}
+
+
+table.summarytbl {
+	background: white;
+}
+table.summarytbl thead {
+	background-color: #3f87a6;
+    color: #fff;
+}
+table.summarytbl thead td {
+	font: 700 24px Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
+}
+table.summarytbl tbody td {
+	text-align: left;
+	font: 400 16px Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
+}
+table.summarytbl tfoot {
+	background-color: #8b9aa1;
+    color: #fff;
+}
+table.summarytbl tfoot td {
+	text-align: left;
+	font: 400 18px Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
+}
+table.summarytbl tbody td.centernumber {
+	text-align:center;
+}
+table.summarytbl tfoot td.centernumber {
+	text-align:center;
+}
+table.summarytbl tfoot td.totalamount {
+	text-align: right;
+	font: 400 18px Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
+}
+
+.hiddenbutton {
+	position: fixed;
+    bottom: 60px;
+    right: 0;
+}

@@ -1,0 +1,548 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prediction</title>
+<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> -->
+<!-- JQUERY -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<!-- Boostrap 4 CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<!-- Sweetalert2 -->
+<!--<script src="https://unpkg.com/sweetalert2@7.19.3/dist/sweetalert2.all.js"></script>-->
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- PDF -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.22/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+
+<!-- Favicon-->
+<link rel="icon" type="image/x-icon" href="{{ url_for('static',filename='assets/favicon.ico') }}" />
+<!-- Bootstrap Icons-->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+<!-- Google fonts-->
+<link href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic" rel="stylesheet" type="text/css" />
+<!-- SimpleLightbox plugin CSS-->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.css" rel="stylesheet" />
+<!-- Core theme CSS (includes Bootstrap)-->
+<link href="{{ url_for('static',filename='css/styles.css') }}" rel="stylesheet" />
+
+<!--<js>-->
+<script type="text/javascript">
+	var mpredictions = '{{ predictions }}';
+	var mparams = '{{ params }}';
+</script>
+<script type="text/javascript" src="{{ url_for('static',filename='js/predict.js') }}"></script>
+<!--<css>-->
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/predict.css') }}"/>
+</head> 
+<body style="background-color:black"> 
+	<!-- Navigation-->
+	<nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
+		<div class="container px-4 px-lg-5">
+			<a class="navbar-brand" href="/"><img id="siteimg" src="{{ url_for('static',filename='assets/ACE_logo.png') }}" alt="ACE Supermarket" width="85" height="64" style="width:85px;height:64px"></a>
+			<button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+			<div class="collapse navbar-collapse" id="navbarResponsive">
+				<ul class="navbar-nav ms-auto my-2 my-lg-0">
+					<li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<!-- Masthead-->
+	<header class="masthead predict">
+		<div class="container px-4 px-lg-5 h-100">
+			<div class="row gx-4 gx-lg-5 h-100 align-items-center justify-content-center text-center">
+				<div class="col-lg-10 align-self-end">
+					<div class="col-lg-12 col-xs-12 text-white-75">
+						<h1>Great choice!</h1>
+						<h2>You have</h2>
+					</div>
+					<div class="col-lg-5 col-xs-12 text-red-100" style="float:left;">
+						<h3 class="colcenter predictedresult"></h3>
+					</div>
+					<div class="col-lg-7 col-xs-12" style="float:left;">
+						<img id="uploadfile" src="" alt="Uploaded Image" width="256" height="auto" style="width:256px;height:auto">	
+					</div>
+				</div>
+				<div class="col-lg-10">
+					<hr class="divider" />
+				</div>
+				<div class="col-lg-10 align-self-baseline">
+					<div id="maintext" style="display: block;">	
+						<h3 class="text-white-75">About: <span class="predictedresult text-white-75"></span></h3>
+						<div id="wikidescription" class="text-white-75"></div>
+						<h4 class="text-white-75">More Details</h4>
+						<p>
+							<a class="btn btn-primary moredetailbtn ingredient hidectrl" data-toggle="collapse" data-target="#ingredient" role="button" aria-expanded="false" aria-controls="Ingredient" onclick="onclick_Ingredient(this);">Ingredient</a>
+							<a class="btn btn-primary moredetailbtn receipe hidectrl" data-toggle="collapse" data-target="#receipe" role="button" aria-expanded="false" aria-controls="receipe" onclick="onclick_Receipe(this);">Recipe</a>
+						  <!--<a class="btn btn-primary CharKwayTeow hidectrl" data-toggle="collapse" data-target="#IngredientCharKwayTeow" role="button" aria-expanded="false" aria-controls="Ingredient" onclick="onclick_Ingredient(this);">Ingredient</a>
+						  <a class="btn btn-primary CharKwayTeow hidectrl" data-toggle="collapse" data-target="#ReceipeCharKwayTeow" role="button" aria-expanded="false" aria-controls="Receipe" onclick="onclick_Receipe(this);">Receipe</a>
+						  <a class="btn btn-primary NasiLemak hidectrl" data-toggle="collapse" data-target="#IngredientNasiLemak" role="button" aria-expanded="false" aria-controls="IngredientNasiLemak" onclick="onclick_Ingredient(this);">Ingredient</a>
+						  <a class="btn btn-primary NasiLemak hidectrl" data-toggle="collapse" data-target="#ReceipeNasiLemak" role="button" aria-expanded="false" aria-controls="ReceipeNasiLemak" onclick="onclick_Receipe(this);">Receipe</a>-->
+						</p>
+						<div class="detailrow" id="accordion">
+						  <div class="col-sm-12 col-xs-12">
+							<p>
+								<div class="foodcollapse collapse multi-collapse" id="ingredient" data-parent="#accordion">
+									<div id="ph_ingredient">
+									</div>								
+								</div>
+							</p>
+							<p>
+								<div class="foodcollapse collapse multi-collapse" id="receipe" data-parent="#accordion">
+									<div id="ph_receipe">
+									</div>								
+								</div>
+							</p>
+							<p>
+								<button class="btn btn-success ingredient online hidectrl" onclick="onclick_submit(this);">Submit to eCommerce</button>
+								<button class="btn btn-info ingredient receipe export hidectrl" onclick="onclick_export(this);">Download</button>
+							</p>
+						</div>
+						<table class="table-bordered text-light hidectrl" style="width:100%">
+							<tr>
+								<th>Rank</th>
+								<th>Class</th>
+								<th>Probability</th>
+								</tr>
+								<tr>
+								<td>Most Likely:</td>
+								<td></td>
+								<td>{{ predictions.prob1 }}</td>
+								</tr>
+								<tr>
+								<td>2nd Most Likely:</td>
+								<td>{{ predictions.class2 }}</td> 
+								<td>{{ predictions.prob2 }}</td> 
+							</tr> 
+						</table> 
+						<a class="hidectrl" href="{{ url_for('main_page') }}"><button class="button mt-3">Try again?</button></a>
+					</div>					
+				</div>
+			</div>
+		</div>
+		<div class='hiddenbutton'>
+			<button class="btn btnnasilemak" onclick="onclick_appendnasilemak(this);">.</button>
+			<button class="btn btncharkwayteow" onclick="onclick_appendcharkwayteow(this);">*</button>
+		</div>
+	</header>
+	<!-- Footer-->
+	<footer class="bg-light py-5">
+		<div class="container px-4 px-lg-5"><div class="small text-center text-muted">Copyright &copy; 2022 - AI Team 3</div></div>
+		<div class="container px-4 px-lg-5"><div class="small text-center text-muted">Disclaimer: Only Char Kway Teow and Nasi Lemak is supported in the current release</div></div>
+	</footer>
+	<!-- Bootstrap core JS-->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+	<!-- SimpleLightbox plugin JS-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.js"></script>
+	<!-- Core theme JS-->
+	<script type="text/javascript" src="{{ url_for('static',filename='js/scripts.js') }}"></script>
+
+	<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+	<!-- * *                               SB Forms JS                               * *-->
+	<!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
+	<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+	<script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+	
+	
+	<div class="wikidescription nasilemak hidectrl">
+		<p class="mw-empty-elt">
+		</p>
+		<p>
+		<i><b>Nasi lemak</b></i> is a dish originating in Malay cuisine that consists of fragrant rice cooked in coconut milk and pandan leaf. It is commonly found in Malaysia, where it is considered the national dish. It is also the native dish in neighbouring areas with significant Malay populations such as Singapore, Brunei, and Southern Thailand. In Indonesia it can be found in several parts of Sumatra, especially the Malay regions of Riau, Riau Islands and Medan. <i>Nasi lemak</i> can also be found in the Bangsamoro region of Mindanao, prepared by Filipino Moros, as well as Australia's external territories of Christmas Island and the Cocos (Keeling) Islands. It is considered an essential dish for a typical Malay-style breakfast.  Nasi lemak is featured as a national dish in most of the country’s tourism brochures and promotional materials. </p><p>It is not to be confused with <i>nasi dagang</i>, sold in the Malaysian east coast states of Terengganu and Kelantan (and its kindred region in Pattani, Yala and Narathiwat in Thailand and Natuna in Indonesia), although both dishes are often served for breakfast. However, because <i>nasi lemak</i> can be served in a variety of ways, it is often eaten throughout the day.
+		</p>
+	</div>
+	
+	<div class="wikidescription charkwayteow hidectrl">
+		<p class="mw-empty-elt">
+		</p>
+		<link rel="mw-deduplicated-inline-style" href="mw-data:TemplateStyles:r1066479718"><p><i><b>Char kway teow</b></i> (Chinese: <span lang="zh-Hant">炒粿條</span>; Pe̍h-ōe-jī: <i><span lang="nan-Latn">chhá-kóe-tiâu</span></i>) is a stir fried rice noodle dish from Maritime Southeast Asia and is of southern Chinese origin. In Hokkien and Teochew, Char means “stir-fried” and kway teow refers to flat rice noodles. It is made from flat rice noodles (Chinese: <span lang="zh">河粉</span>; pinyin: <i><span lang="zh-Latn-pinyin">hé fěn</span></i>; Cantonese Yale: <i><span lang="yue-Latn">hó fán</span></i>) or kway teow (Chinese: <span lang="zh">粿條</span>; Pe̍h-ōe-jī: <i><span lang="nan-Latn">kóe-tiâu</span></i>; pinyin: <i><span lang="zh-Latn-pinyin">guǒ tiáo</span></i>; Cantonese Yale: <i><span lang="yue-Latn">gwó tìuh</span></i>) of approximately 1 cm or (in the north of Malaysia) about 0.5 cm in width, stir-fried over very high heat with garlic, light and dark soy sauce, chilli paste, whole prawns, shelled blood cockles, chopped Chinese chives, slices of Chinese sausage, and bean sprouts. Other common ingredients include fishcake and belachan.</p><p>Originally developed and catered to overseas-born Chinese labourers in the Southeast Asia region, the dish has achieved widespread popularity within the region from the late 20th century onwards, particularly in Malaysia and Singapore. On the other hand, the dish has also acquired a reputation of being unhealthy within modern contexts due to its high saturated fat content, as it is traditionally stir-fried in pork fat with crisp croutons of pork lard.
+		</p>
+	</div>
+	
+	<!--<div id='#ctrltemplate'class='hidectrl'>
+		<table class="table table-bordered table-striped ingredienttbl charkwayteow" id='ingredient_charkwayteow' style="width:100%">
+			<thead>
+				<tr>
+					<td></td>
+					<td>Ingredient</td>
+					<td>Amount</td>
+					<td>Unit</td>
+					<td>Price</td>
+					<td>Location</td>
+				</tr>
+			</thead>
+			<tbody>										
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>garlic clove</td>
+					<td class='centernumber'>1</td>
+					<td>pcs</td>
+					<td class='centernumber'>2.00</td>
+					<td>Row 3</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>egg</td>
+					<td class='centernumber'>2</td>
+					<td>pcs</td>
+					<td class='centernumber'>3.40</td>
+					<td>Row 3</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>rice noodles</td>
+					<td class='centernumber'>350</td>
+					<td>gram</td>
+					<td class='centernumber'>3.50</td>
+					<td>Row 3</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>bean shoots</td>
+					<td class='centernumber'>0.25</td>
+					<td>cup</td>
+					<td class='centernumber'>2.30</td>
+					<td>Row 3</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>garlic chives</td>
+					<td class='centernumber'>2</td>
+					<td>stem</td>
+					<td class='centernumber'>2.70</td>
+					<td>Row 3</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>red chilies</td>
+					<td class='centernumber'>50</td>
+					<td>gram</td>
+					<td class='centernumber'>2.10</td>
+					<td>Row 3</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>red shallots</td>
+					<td class='centernumber'>3</td>
+					<td>pcs</td>
+					<td class='centernumber'>1.50</td>
+					<td>Row 3</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>vegetable oil</td>
+					<td class='centernumber'>3</td>
+					<td>tbsp</td>
+					<td class='centernumber'>10.80</td>
+					<td>Row 5</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>sea salt</td>
+					<td class='centernumber'>2</td>
+					<td>tsp</td>
+					<td class='centernumber'>2.20</td>
+					<td>Row 5</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>soy sauce</td>
+					<td class='centernumber'>2</td>
+					<td>tbsp</td>
+					<td class='centernumber'>2.50</td>
+					<td>Row 5</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>oyster sauce</td>
+					<td class='centernumber'>1</td>
+					<td>tbsp</td>
+					<td class='centernumber'>3.20</td>
+					<td>Row 5</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>fish sauce</td>
+					<td class='centernumber'>2</td>
+					<td>tsp</td>
+					<td class='centernumber'>2.10</td>
+					<td>Row 5</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>dark soy sauce</td>
+					<td class='centernumber'>1</td>
+					<td>tsp</td>
+					<td class='centernumber'>2.20</td>
+					<td>Row 5</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>sugar</td>
+					<td class='centernumber'>1</td>
+					<td>tsp</td>
+					<td class='centernumber'>2.00</td>
+					<td>Row 5</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>ground black pepper</td>
+					<td class='centernumber'>0.25</td>
+					<td>tsp</td>
+					<td class='centernumber'>3.10</td>
+					<td>Row 5</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>Chinese sausage</td>
+					<td class='centernumber'>50</td>
+					<td>gram</td>
+					<td class='centernumber'>9.10</td>
+					<td>Row 6</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>fishcake</td>
+					<td class='centernumber'>50</td>
+					<td>gram</td>
+					<td class='centernumber'>5.00</td>
+					<td>Row 6</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>prawn</td>
+					<td class='centernumber'>8</td>
+					<td>pcs</td>
+					<td class='centernumber'>7.20</td>
+					<td>Row 8</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<table class="table table-bordered table-striped receipetbl charkwayteow" id='receipe_charkwayteow' style="width:100%">
+			<thead>
+				<tr>
+					<td>Step</td>
+					<td>Description</td>
+				</tr>
+			</thead>
+			<tbody>										
+				<tr>
+					<td>1</td>
+					<td>For the chilli paste, soak the dried red chillies in hot water for 15 minutes or until softened. Then use tongs to remove them from the soaking liquid. Reserve the soaking liquid in case you need it when blending. Roughly chop the chillies and place them in the bowl of a food processor. Add the fresh chillies, shallots and salt. Blend until smooth (add a tablespoon of the chilli soaking liquid if your food processor gets stuck).</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>Heat 4 tablespoons of vegetable oil in a frying pan over medium heat. Add the chilli paste and cook, stirring, for about 5 minutes. Transfer the chilli paste to a jar.</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>For the stir-fry sauce, mix the ingredients in a small bowl and set aside for later.</td>
+				</tr>
+				<tr>
+					<td>4</td>
+					<td>Heat 2 tablespoons of vegetable oil in a wok or large frying pan over high heat. Add the garlic and stir-fry for 5 seconds. Then add the Chinese sausage and stir-fry for another 10 seconds. Then add the fishcakes and the prawns. Stir-fry until the prawns are almost cooked. Then add 2 heaped tablespoons (or to taste) of the chilli paste. Toss to combine. Then push the ingredients out to the side of the pan to make room in the middle. Add a tablespoon of oil to the centre of the pan. Then pour in the eggs. Use your spatula to spread the eggs out. Once the eggs are set, toss them around with the remaining ingredients.</td>
+				</tr>
+				<tr>
+					<td>5</td>
+					<td>Now add the noodles and the stir-fry sauce. Stir-fry until well combined. Then toss through the bean shoots and the Chinese chives. Remove from heat and serve</td>
+				</tr>
+				<tr>
+					<td>6</td>
+					<td>Notes:
+	– You’ll have more chilli paste than you need for this recipe. Simply store it in the fridge for up to a month. Use it to add a chilli kick to just about anything…stir-fries, grilled meats or breakfast eggs.
+	– Chinese sausage, also known as lap cheong is a sweet preserved pork sausage. It can be bought online or from an Asian grocery store.
+	– Asian fishcakes are available in the fridge or freezer section of any Asian grocery store.</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<table class="table table-bordered table-striped ingredienttbl nasilemak" id='ingredient_nasilemak' style="width:100%">
+			<thead>
+				<tr>
+					<td></td>
+					<td>Ingredient</td>
+					<td>Amount</td>
+					<td>Unit</td>
+					<td>Price</td>
+					<td>Location</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>jasmine rice</td>
+					<td class='centernumber'>2</td>
+					<td>cup</td>
+					<td class='centernumber'>8.60</td>
+					<td>Row 3</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>brown sugar</td>
+					<td class='centernumber'>1</td>
+					<td>tbsp</td>
+					<td class='centernumber'>2.30</td>
+					<td>Row 3</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>egg</td>
+					<td class='centernumber'>1</td>
+					<td>pcs</td>
+					<td class='centernumber'>3.20</td>
+					<td>Row 3</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>peanut oil</td>
+					<td class='centernumber'>0.25</td>
+					<td>cup</td>
+					<td class='centernumber'>8.60</td>
+					<td>Row 5</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>tamarind puree</td>
+					<td class='centernumber'>1</td>
+					<td>tbsp</td>
+					<td class='centernumber'>1.50</td>
+					<td>Row 5</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>shrimp paste</td>
+					<td class='centernumber'>1</td>
+					<td>tsp</td>
+					<td class='centernumber'>3.50</td>
+					<td>Row 5</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>coconut milk</td>
+					<td class='centernumber'>400</td>
+					<td>gram</td>
+					<td class='centernumber'>2.10</td>
+					<td>Row 5</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>garlic clove</td>
+					<td class='centernumber'>1</td>
+					<td>pcs</td>
+					<td class='centernumber'>1.60</td>
+					<td>Row 5</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>red shallots</td>
+					<td class='centernumber'>2</td>
+					<td>pcs</td>
+					<td class='centernumber'>1.40</td>
+					<td>Row 5</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>red chillies</td>
+					<td class='centernumber'>10</td>
+					<td>pcs</td>
+					<td class='centernumber'>1.60</td>
+					<td>Row 5</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>red onion</td>
+					<td class='centernumber'>1</td>
+					<td>pcs</td>
+					<td class='centernumber'>1.30</td>
+					<td>Row 5</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>lemongrass</td>
+					<td class='centernumber'>1</td>
+					<td>stalk</td>
+					<td class='centernumber'>1.10</td>
+					<td>Row 5</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>dried anchovies</td>
+					<td class='centernumber'>1</td>
+					<td>cup</td>
+					<td class='centernumber'>2.10</td>
+					<td>Row 5</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>cucumber</td>
+					<td class='centernumber'>0.5</td>
+					<td>pcs</td>
+					<td class='centernumber'>1.50</td>
+					<td>Row 5</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>fried peanuts</td>
+					<td class='centernumber'>100</td>
+					<td>gram</td>
+					<td class='centernumber'>0.70</td>
+					<td>Row 6</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="checkbox" value="1" name="selectingred" /></td>
+					<td>fried chicken</td>
+					<td class='centernumber'>0.5</td>
+					<td>pcs</td>
+					<td class='centernumber'>6.00</td>
+					<td>Row 6</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<table class="table table-bordered table-striped receipetbl nasilemak" id='receipe_nasilemak' style="width:100%">
+			<thead>
+				<tr>
+					<td>Step</td>
+					<td>Description</td>
+				</tr>
+			</thead>
+			<tbody>										
+				<tr>
+					<td>1</td>
+					<td>To cook the rice, add the rice, coconut milk and lemongrass into a saucepan. Settle the rice evenly into the bottom of the saucepan. Place your finger on top of the rice and add enough water so that the liquid comes up to your first knuckle. Place over a medium-high heat and simmer for 10 minutes or until most of the liquid has evaporated. Then place a lid on and reduce the heat to low and cook for another 2 minutes. Then turn the heat off and allow to sit, covered, for 10 minutes.</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>For the spicy ikan bilis sambal, soak the dried chillies in hot water for 15 minutes to soften. Drain the chillies squeezing out the excess liquid. Reserve the soaking liquid.</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>Place the soaked chillies in the bowl of a small food processor along with the fresh chilli, shallot, garlic and shrimp paste. Process until a coarse paste forms.</td>
+				</tr>
+				<tr>
+					<td>4</td>
+					<td>Heat the oil in a wok over high heat. Add the anchovies and cook, stirring often, for 5 minutes or until crisp. Use a slotted spoon to transfer to a plate lined with paper towel. Add the onion to the pan. Cook, stirring occasionally, for 5 minutes. Transfer to the plate with the anchovies. Add the chilli mixture to the wok. Reduce heat to low. Cook, stirring often for 5 minutes or until the red oil rises to the surface. Add the sugar, tamarind and 2 tablespoons of the chilli soaking liquid. Simmer for 5 minutes or until reduced. Stir in the anchovies and onion. Transfer to a bowl. </td>
+				</tr>
+				<tr>
+					<td>5</td>
+					<td>When ready to serve, use a fork to fluff up the coconut rice. Serve the rice with the spicy ikan bilis sambal, peanuts, egg, cucumber and ayam goreng (if using).</td>
+				</tr>
+				<tr>
+					<td>6</td>
+					<td>Notes:
+
+	– Typically, this rice is infused with pandan leaves, but I use lemongrass or ginger slices when I can’t find pandan leaves at my Asian grocery store. You could also just do coconut milk without the extra aromatics. 
+
+	– Ikan bilis are a dried anchovy fish that are sold through Asian grocery stores. They can be sold ‘fresh’ frozen (in which case you need to cook them as I have here) or they can be bought shelf-stable and already fried, in which case you can just add them into the sambal without having to fry them first.</td>
+				</tr>
+			</tbody>
+		</table>
+	
+	</div>-->
+</body>
+</html>
