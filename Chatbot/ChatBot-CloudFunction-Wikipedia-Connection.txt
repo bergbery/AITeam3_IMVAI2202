@@ -1,0 +1,67 @@
+/**
+  *
+  * main() will be run when you invoke this action
+  *
+  * @param Cloud Functions actions accept a single parameter, which must be a JSON object.
+  *
+  * @return The output of this action, which must be a JSON object.
+  *
+  */
+
+//v6, test webhook links to 2 cloud functions
+
+let rp = require('request-promise')
+function main(params) {
+
+if (params.action == 'test_object'){//change to "feedback_object" in waston assistant, so here this condition will not be met and called. 
+                                    // if we want to enable this, change 'test_object' to 'feedback_object'
+
+    const options = {
+        uri: "https://en.wikipedia.org/api/rest_v1/page/summary/"+ 'IBM_Db2'+ "?redirect=true",
+        json: true
+    }
+    
+    return rp(options)
+    .then(res => {
+        return { extract : res }
+    })
+
+}
+
+else {
+    
+    const options = {
+        uri: "https://en.wikipedia.org/api/rest_v1/page/summary/"+ encodeURIComponent(params.object_of_interest)+ "?redirect=true",
+        json: true
+    }
+    return rp(options)
+    .then(res => {
+        return { extract : res }
+    })
+    }
+    
+    
+}
+
+/*
+function main(params) {
+	//return { message: 'Hello World' };
+	
+}
+*/
+
+/*v5
+
+let rp = require('request-promise')
+function main(params) {
+const options = {
+    uri: "https://en.wikipedia.org/api/rest_v1/page/summary/"+ encodeURIComponent(params.object_of_interest)+ "?redirect=true",
+    json: true
+}
+return rp(options)
+.then(res => {
+    return { extract : res }
+})
+}
+
+*/
