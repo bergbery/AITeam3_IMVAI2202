@@ -5,7 +5,7 @@ URL: https://myfoodclassify.herokuapp.com
 ------------
 From Team 3
 ------------
-Eugene Ang
-Julia Ge
-Neo Say Chao
-Colin Sun
+Eugene Ang<br />
+Julia Ge<br />
+Neo Say Chao<br />
+Colin Sun<br />
